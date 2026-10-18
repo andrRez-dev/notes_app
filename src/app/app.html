@@ -40,20 +40,62 @@
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
     @for (item of notes_list; track item.title) {
       <div class="bg-emerald-50/60 border border-emerald-200 rounded-2xl p-4 flex flex-col justify-between hover:shadow-md transition">
-        <div class="space-y-2">
-          <h3 class="font-bold text-slate-800 text-lg break-words">{{ item.title }}</h3>
-          <p class="text-slate-600 text-sm whitespace-pre-line break-words">{{ item.text }}</p>
-        </div>
+        @if (editingNoteId === item.id) {
+            <div class="space-y-3">
+              <input 
+                type="text" 
+                [(ngModel)]="editTitle"
+                class="w-full px-2 py-1 bg-white border border-emerald-300 rounded-lg text-slate-800 font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              />
+              <textarea 
+                rows="3"
+                [(ngModel)]="editText"
+                class="w-full px-2 py-1 bg-white border border-emerald-300 rounded-lg text-slate-600 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
+              ></textarea>
+            </div>
+
+            <div class="mt-4 pt-2 flex justify-end gap-2 border-t border-emerald-200/60">
+              <button 
+                type="button"
+                (click)="saveInlineEdit(item.id!)" 
+                class="text-xs font-medium bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded-lg transition cursor-pointer"
+              >
+                Save
+              </button>
+              <button 
+                type="button"
+                (click)="cancelInlineEdit()" 
+                class="text-xs font-medium bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1 rounded-lg transition cursor-pointer"
+              >
+                Cancel
+              </button>
+            </div>
+          
+
+          } @else {
+            <div class="space-y-2">
+              <h3 class="font-bold text-slate-800 text-lg break-words">{{ item.title }}</h3>
+              <p class="text-slate-600 text-sm whitespace-pre-line break-words">{{ item.text }}</p>
+            </div>
         
         <div class="mt-4 pt-2 flex justify-end border-t border-emerald-200/60">
           <button 
+                type="button"
+                (click)="startInlineEdit(item)" 
+                class="text-xs font-medium text-amber-600 hover:text-amber-700 hover:bg-amber-100/50 px-2 py-1 rounded-lg transition cursor-pointer"
+              >
+                Edit
+          </button>
+          <button 
             type="button"
-            (click)="toggleDelete(item.title)" 
+            (click)="toggleDelete(item.id)" 
             class="text-xs font-medium text-rose-600 hover:text-rose-700 hover:bg-rose-100/50 px-2 py-1 rounded-lg transition cursor-pointer"
           >
             Delete
           </button>
         </div>
+      }
+        
       </div>
     } @empty {
       <div class="col-span-full text-center py-12 text-slate-400">
